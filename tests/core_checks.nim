@@ -17,7 +17,7 @@ sendDatum = proc(p: Peer, k: Kind, d: Datum) = sent.add d
 traffic = proc(p: Peer) = discard
 accept = proc(p: Peer, k: Kind, d: Datum): bool = true
 
-n.tick(0.025)
+n.tick(Seconds(0.025))
 doAssert n.all.len == 1 and n.all[0].info.id == 2
 doAssert kind.queue.len == 1 and kind.queue[0].datum.key == 5
 doAssert sent.len >= 1 and sent[0].key == 3
