@@ -1,0 +1,25 @@
+blastd core
+├─ Net owns known peer descriptors, active membership, registered kinds and sampling state
+│  ├─ `all` is the union of disjoint `near` and `far` sets
+│  └─ only placement and unlinking helpers change active membership
+├─ transport supplies ordered, authenticated lifecycle events and send/accept hooks
+│  ├─ join activates a peer; leave removes active membership but retains its descriptor
+│  ├─ peer-table entries are hints and record their informant; hints do not connect
+│  └─ data is queued only from active peers, for registered kinds accepted by host policy
+├─ each Kind holds outgoing state in `row` and accepted incoming effects in `queue`
+│  ├─ `initialFull` sends the current row during peer bootstrap
+│  └─ codec, MTU, pacing, per-source deduplication and `dropOld`/`once` behavior stay external
+├─ tick ages outgoing rows, receives events, updates traffic, prunes, retains, pairs and samples sends
+│  ├─ pruning samples 1% of active peers per tick and removes peers over `pingLimit`
+│  ├─ retention uses aggregate traffic pressure; host policy chooses retention chance
+│  └─ far peers square their saturated send coefficient before row sampling
+├─ peer ping and ping limit use `Milliseconds`; sample age and tick duration use `Seconds`
+└─ desync attribution stays with the engine; a host hook records reports or supplies a cost
+
+Peer identity
+├─ `PeerId` is a transport-facing uint64 identifier
+├─ `PeerInfo.playerId` may carry an NFC identity from the host
+└─ this library does not authenticate peers or implement a gateway
+
+Known limitations
+└─ transport restart epochs and schema negotiation belong to a later protocol layer

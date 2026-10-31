@@ -1,0 +1,2 @@
+integration
+└─ publish blastd to a shareable remote and switch A to consume the standalone package

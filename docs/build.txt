@@ -1,0 +1,6 @@
+build and tests
+├─ Nim >= 2.0; package sources live in `src/`
+├─ `make test` compiles and runs both test programs with Nim's cache output
+│  └─ override `NIM` or `NIMFLAGS` when needed
+├─ blastd contains no game, terminal or transport implementation
+└─ host applications bind transport and policy callbacks before calling `tick`
