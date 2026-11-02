@@ -1,36 +1,26 @@
 # blastd
 
-blastd is A's extracted peer-to-peer core. Host applications provide transport
-and policy hooks; peer authentication and identity remain host responsibilities.
+## Index
 
-Keep code compact and data-oriented. Preserve purposeful column alignment and
-visible ownership and mutation. For important code, render it, revise a local
-region of about 3–20 lines, then render again. Widen review when local changes
-do not settle the file.
+- Rules: `~/.codex/AGENTS.md`; repo exceptions: repo `AGENTS.md`.
+- Skills: `/workspace/agent-state/skills/README.md`; todo: repo `docs/todo.txt`.
+- Memory: `~/.optmem/memo`; shared notes: `/workspace/agent-state/notes/`.
 
-Sources live in `src/`; tests live in `tests/`. Run `make test` after changes.
-Keep docs human-readable, organized by topic, and use tree notation for concise
-architecture and todo notes. Keep generated output out of Git and use LF endings.
+Extracted A peer-to-peer core: `src/` code, `tests/` checks, `docs/` architecture
+and todo. Host provides transport/policy hooks, authentication and identity.
 
-Todo order expresses priority; independent tasks may be done in any order. A
-standalone `defer>>>` or `Deferred>>>` line defers all following entries. Do not
-work on deferred tasks until explicitly brought back into scope.
+Compact data-oriented Nim; preserve aligned columns, visible ownership/mutation.
+For important code render, revise ~3–20 lines, render again; widen if unsettled.
+Run `make test` after changes. Human-readable topical docs and tree notation;
+keep generated output out of Git. LF text.
 
-Comment markers:
+Todo order = priority, not sequence. Independent work may proceed in any order.
+Standalone `defer>>>` / `Deferred>>>` defers every following entry; leave
+explicitly deferred work untouched until user reopens it. Comment tags: `#!!`
+uncommitted hack; `#?`/`#????` confusion, explain line; `#todo` unimplemented
+block; `#fixme` unintended/broken behavior. Avoid trivial semantic wrappers;
+compact locals: v number-like, x scalar, i integer, s symbol when clear.
 
-- `#!!`: hacky code that was not supposed to commit.
-- `#?`, `#????`, and similar: confusion; explain the line in a comment.
-- `#todo`: unimplemented behavior.
-- `#fixme`: unintended or broken behavior.
-
-Avoid semantic-only wrapper functions. For compact locals, use `v` for
-number-like values, `x` for scalars, `i` for integers, and `s` for symbols when
-context is clear.
-
-Vacation and dream guidance lives in `/workspace/agent-state/skills/vacation/SKILL.md` and
-`/workspace/agent-state/skills/dream/SKILL.md`; use their increased shared detour allowance.
-
-Shared skills and personal agent state belong in `/workspace/agent-state`, not
-in this repository. Resolve `AGENT_STATE_ROOT` there by default. Read VM-local
-`~/.codex/AGENTS.md` for personal preferences; retain project-specific exceptions
-here. Route new reusable skills to the shared repo, not `llm/agents/skills/`.
+Preserve quotes verbatim. Shared skills and personal notes: `/workspace/agent-state`;
+repo-specific exceptions stay here. Prefer VM-local rules for personal preferences;
+user instructions win. Shared vacation/dream skills use increased allowance.
