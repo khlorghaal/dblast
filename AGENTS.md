@@ -26,3 +26,11 @@ Comment markers:
 Avoid semantic-only wrapper functions. For compact locals, use `v` for
 number-like values, `x` for scalars, `i` for integers, and `s` for symbols when
 context is clear.
+
+Vacation and dream guidance lives in `/workspace/agent-state/skills/vacation/SKILL.md` and
+`/workspace/agent-state/skills/dream/SKILL.md`; use their increased shared detour allowance.
+
+Shared skills and personal agent state belong in `/workspace/agent-state`, not
+in this repository. Resolve `AGENT_STATE_ROOT` there by default. Read VM-local
+`~/.codex/AGENTS.md` for personal preferences; retain project-specific exceptions
+here. Route new reusable skills to the shared repo, not `llm/agents/skills/`.
