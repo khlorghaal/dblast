@@ -1,5 +1,5 @@
 import std/[math, unittest]
-import ../src/[saturation, units]
+import ../src/[blastd, units]
 
 suite "blastd scalar utilities":
   test "saturation clamps both bounds and preserves interior values":

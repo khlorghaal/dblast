@@ -1,8 +1,10 @@
 # peers cant desync if a cliebt is barely sank to its own sink
 # maintain evanescent stochastic dendrites
 import std/[tables, sets, random, sequtils, math]
-import units, saturation
+import units
 export units
+
+func sat*(x: float32): float32 = clamp(x, 0'f32, 1'f32)
 
 type
   PeerId* = uint64
