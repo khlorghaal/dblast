@@ -16,10 +16,20 @@ blastd core
 ├─ peer ping and ping limit use `Milliseconds`; sample age and tick duration use `Seconds`
 └─ desync attribution stays with the engine; a host hook records reports or supplies a cost
 
+Host data model (intended; not all behavior implemented)
+├─ blastd transports opaque, generic data; host owns application meaning
+├─ banded values interpolate; host defines meaning and interpolation
+├─ triggers: discrete actions such as buttons; emitter fully trusted
+├─ causals: highly disruptive outcomes, e.g. ship launched missile before dying;
+│  representation and evaluation deferred
+└─ blastd and host time units independent; specify boundary units verbally:
+   peer ping and limits in milliseconds; datum age and tick duration in seconds
+
 Peer identity
 ├─ `PeerId` is a transport-facing uint64 identifier
 ├─ `PeerInfo.playerId` may carry an NFC identity from the host
-└─ this library does not authenticate peers or implement a gateway
+└─ host owns peer auth, separate from gateway transport; blastd implements neither
+   auth nor gateway
 
 Known limitations
 └─ transport restart epochs and schema negotiation belong to a later protocol layer

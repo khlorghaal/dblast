@@ -1,2 +1,8 @@
 integration
-└─ publish blastd to a shareable remote and switch A to consume the standalone package
+└─ publish blastd to a shareable remote; A currently consumes local checkout
+
+defer>>>
+
+causals
+└─ representation, evidence, disagreement handling for highly disruptive outcomes,
+   e.g. ship launched missile before dying
