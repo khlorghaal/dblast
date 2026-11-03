@@ -1,3 +1,4 @@
+## Test map: saturation bounds; typed time conversion, rounding and overflow rejection.
 import std/[math, unittest]
 import ../src/[blastd, units]
 

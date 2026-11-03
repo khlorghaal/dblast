@@ -1,3 +1,4 @@
+## Test map: registration; peer lifecycle/hints; event gating; sampling/pruning; policy hooks.
 import std/[math, sequtils, sets, tables, unittest]
 import ../src/blastd
 
@@ -93,6 +94,7 @@ suite "blastd network core":
     expect AssertionDefect:
       discard n.register(8)
 
+  # Discovery hints do not imply active membership.
   test "seeding learns descriptors without connecting them":
     var n = initNet(info(1), 17)
     n.seed([info(0), info(1), info(2, "seeded")])
@@ -189,6 +191,7 @@ suite "blastd network core":
     check n.peers.len == 0
     check n.all.len == 0
 
+  # Inbound lifecycle and payload gates.
   test "peer table learns hints and records their informant":
     var n = initNet(info(1), 17)
     let source = n.connectedPeer(2)
@@ -271,6 +274,7 @@ suite "blastd network core":
     check accepted.len == 0
     check k.queue.len == 0
 
+  # Row aging, stochastic sampling and peer-retention policies.
   test "outgoing row age advances before transmission":
     var n = initNet(info(1), 17)
     let k = n.register(7)
@@ -391,6 +395,7 @@ suite "blastd network core":
     n.tick()
     check connected.len == 0
 
+  # Host policy hooks and provenance view.
   test "desync policy receives peer and severity":
     var n = initNet(info(1), 17)
     let p = n.connectedPeer(2)
