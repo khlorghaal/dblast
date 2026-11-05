@@ -1,6 +1,10 @@
 integration
 └─ publish blastd to a shareable remote; A currently consumes local checkout
 
+time representation
+└─ remove units; use uint64 milliseconds from relative epoch; convert locally
+   where other units are needed
+
 defer>>>
 
 causals

@@ -2,10 +2,12 @@
 
 ## Index
 
-`src/` code, `tests/` checks, `docs/` architecture
+- Rules: `~/.codex/AGENTS.md`; repo exceptions: repo `AGENTS.md`.
+- Skills: `/workspace/agent-state/skills/README.md`; todo: repo `docs/todo.txt`.
+- Memory: `~/.optmem/memo`; shared notes: `/workspace/agent-state/notes/`.
+
+Extracted A peer-to-peer core: `src/` code, `tests/` checks, `docs/` architecture
 and todo. Host provides transport/policy hooks, authentication and identity.
-`/llm` for agentic repo-specific miscellania that dont belong in docs or todo,
-it may be used however and seldom human-read.
 
 Compact data-oriented Nim; preserve aligned columns, visible ownership/mutation.
 For important code render, revise ~3–20 lines, render again; widen if unsettled.
@@ -19,5 +21,6 @@ uncommitted hack; `#?`/`#????` confusion, explain line; `#todo` unimplemented
 block; `#fixme` unintended/broken behavior. Avoid trivial semantic wrappers;
 compact locals: v number-like, x scalar, i integer, s symbol when clear.
 
-Preserve quotes verbatim. Prefer VM-local rules for personal preferences;
-user instructions win. 
+Preserve quotes verbatim. Shared skills and personal notes: `/workspace/agent-state`;
+repo-specific exceptions stay here. Prefer VM-local rules for personal preferences;
+user instructions win. Shared vacation/dream skills use increased allowance.
