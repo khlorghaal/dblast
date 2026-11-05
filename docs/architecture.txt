@@ -13,7 +13,9 @@ blastd core
 │  ├─ pruning samples 1% of active peers per tick and removes peers over `pingLimit`
 │  ├─ retention uses aggregate traffic pressure; host policy chooses retention chance
 │  └─ far peers square their saturated send coefficient before row sampling
-├─ peer ping and ping limit use `Milliseconds`; sample age and tick duration use `Seconds`
+├─ peer ping, ping limit, sample age and tick duration use raw `uint64` milliseconds
+│  ├─ `NoPing` marks an unknown measurement; unknown peers are not pruned
+│  └─ elapsed age saturates at `high(uint64)`; time stays monotonic and relative
 └─ desync attribution stays with the engine; a host hook records reports or supplies a cost
 
 Host data model (intended; not all behavior implemented)
@@ -22,8 +24,8 @@ Host data model (intended; not all behavior implemented)
 ├─ triggers: discrete actions such as buttons; emitter fully trusted
 ├─ causals: highly disruptive outcomes, e.g. ship launched missile before dying;
 │  representation and evaluation deferred
-└─ blastd and host time units independent; specify boundary units verbally:
-   peer ping and limits in milliseconds; datum age and tick duration in seconds
+└─ transport supplies sample age and tick delta as monotonic millisecond counts;
+   hosts convert to seconds locally when their math needs floating-point time
 
 Peer identity
 ├─ `PeerId` is a transport-facing uint64 identifier

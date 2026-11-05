@@ -1,10 +1,10 @@
 # peers cant desync if a cliebt is barely sank to its own sink
 # maintain evanescent stochastic dendrites
 import std/[tables, sets, random, sequtils, math]
-import units
-export units
 
 func sat*(x: float32): float32 = clamp(x, 0'f32, 1'f32)
+
+const NoPing* = high(uint64)
 
 type
   PeerId* = uint64
@@ -18,14 +18,14 @@ type
   Peer* = ref object
     info*      : PeerInfo
     trust*     : float32
-    ping*      : Milliseconds # -1 means unknown
+    ping*      : uint64 # milliseconds; NoPing means unknown
     up*, down* : Traffic
     informants*: HashSet[PeerId]
 
   Datum* = object
     key*, revision*: uint64
     bytes*: seq[byte]
-    age*  : Seconds # sample age at receipt; supplied by transport
+    age*  : uint64 # sample age in milliseconds at receipt; supplied by transport
   Receipt* = tuple[source: PeerId, datum: Datum]
 
   KindId* = uint16
@@ -48,7 +48,7 @@ type
     peers*          : Table[PeerId, Peer] # known, connected or not
     near*, far*, all*: seq[Peer] # disjoint near/far; all is their union
     kinds*          : Table[KindId, Kind]
-    pingLimit*      : Milliseconds
+    pingLimit*      : uint64 # milliseconds
 
     positionTrust*: proc(p: Peer, credibilityBonus: float32): float32
     recordDesync* : proc(p: Peer, severity: float32)
@@ -72,7 +72,7 @@ var # policy
 
 proc initNet*(selph: PeerInfo, seed: int64): Net =
   doAssert selph.id != 0
-  Net(selph: selph, rng: initRand(seed), pingLimit: Milliseconds(2000))
+  Net(selph: selph, rng: initRand(seed), pingLimit: 2000)
 
 proc register*(n: var Net, id: KindId,
                dropOld = false, once = false, initialFull = false): Kind =
@@ -110,7 +110,7 @@ proc learn(n: var Net, info: PeerInfo, via: PeerId = 0): Peer =
 
   result = n.peers.getOrDefault(info.id)
   if result.isNil:
-    result = Peer(info: info, ping: Milliseconds(-1), up: (0'f32, 1'f32))
+    result = Peer(info: info, ping: NoPing, up: (0'f32, 1'f32))
     n.peers[info.id] = result
 
     for p in n.all:
@@ -173,18 +173,19 @@ iterator informantEdges*(n: Net): Edge =
     for source in p.informants:
       yield (source, p.info.id)
 
-proc tick*(n: var Net, dt = Seconds(0)) =
+proc tick*(n: var Net, dt = 0'u64) =
   # Age existing outgoing rows; pass zero when they were just published.
-  doAssert dt >= Seconds(0) and classify(float64(dt)) notin {fcNan, fcInf, fcNegInf}
   for k in n.kinds.values:
-    for d in k.row.mitems: d.age += dt
+    for d in k.row.mitems:
+      if dt > high(uint64) - d.age: d.age = high(uint64)
+      else: d.age += dt
 
   n.receive()
   for p in n.all: traffic(p)
 
   #prune
   n.eachPct(n.all, 0.01):
-    if it.ping > n.pingLimit:
+    if it.ping != NoPing and it.ping > n.pingLimit:
       disconnect(it.info.id)
       n.unlink(it)
 

@@ -54,7 +54,7 @@ proc info(id: PeerId, endpoint = ""): PeerInfo =
 
 proc connectedPeer(n: var Net, id: PeerId,
                    far = false): Peer =
-  result = Peer(info: info(id), ping: Milliseconds(-1), up: (0'f32, 1'f32))
+  result = Peer(info: info(id), ping: NoPing, up: (0'f32, 1'f32))
   n.peers[id] = result
   n.all.add result
   if far: n.far.add result
@@ -71,7 +71,7 @@ suite "blastd network core":
   test "initialization establishes self and default ping limit":
     let n = initNet(info(1), 17)
     check n.selph.id == 1
-    check n.pingLimit == Milliseconds(2000)
+    check n.pingLimit == 2000'u64
     check n.peers.len == 0
     check n.all.len == 0
 
@@ -280,13 +280,13 @@ suite "blastd network core":
     let k = n.register(7)
     k.row.add Datum(key: 3, revision: 1)
     let p = n.connectedPeer(2)
-    n.tick(Seconds(0.025))
+    n.tick(25)
     check datagrams.len == 1
     check datagrams[0].dst == 2
-    check abs(float64(datagrams[0].datum.age) - 0.025) < 0.000001
+    check datagrams[0].datum.age == 25
     p.up.coefficient = 0
-    n.tick(Seconds(0.075))
-    check abs(float64(k.row[0].age) - 0.1) < 0.000001
+    n.tick(75)
+    check k.row[0].age == 100
     check datagrams.len == 1
 
   test "coefficient one sends every row to each peer":
@@ -335,7 +335,7 @@ suite "blastd network core":
   test "peer above ping limit is eventually pruned by sampling":
     var n = initNet(info(1), 17)
     let slow = n.connectedPeer(2)
-    slow.ping = Milliseconds(2001)
+    slow.ping = 2001
     var ticks = 0
     while n.all.len > 0 and ticks < 20000:
       n.tick()
@@ -349,7 +349,7 @@ suite "blastd network core":
   test "peer exactly at ping limit remains connected":
     var n = initNet(info(1), 17)
     let edge = n.connectedPeer(2)
-    edge.ping = Milliseconds(2000)
+    edge.ping = 2000
     n.tick()
     check disconnected.len == 0
     check n.all.len == 1
@@ -439,12 +439,3 @@ suite "blastd network core":
     check edges.len == 2
     check (3'u64, 2'u64) in edges
     check (4'u64, 2'u64) in edges
-
-  test "tick rejects negative and non-finite durations":
-    var n = initNet(info(1), 17)
-    expect AssertionDefect:
-      n.tick(Seconds(-0.01))
-    expect AssertionDefect:
-      n.tick(Seconds(Inf))
-    expect AssertionDefect:
-      n.tick(Seconds(NaN))
