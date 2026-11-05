@@ -1,6 +1,3 @@
-integration
-└─ publish blastd to a shareable remote; A currently consumes local checkout
-
 defer>>>
 
 causals
