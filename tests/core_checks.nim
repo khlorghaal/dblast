@@ -361,15 +361,21 @@ suite "blastd network core":
     check disconnected.len == 0
     check n.all.len == 1
 
-  test "retention policy moves low retention peers to far set":
+  test "retention samples peers once before moving them to far set":
     var n = initNet(info(1), 17)
-    let p = n.connectedPeer(2)
-    p.up.load = 5 # Push per-peer retention sampling probability above one.
-    retention = proc(p: Peer): float32 = 0
+    var sampled: seq[PeerId]
+    for id in 2'u64..5'u64:
+      let p = n.connectedPeer(id)
+      p.up.load = 5 # Push per-peer retention sampling probability above one.
+    retention = proc(p: Peer): float32 =
+      sampled.add p.info.id
+      0
     n.tick()
+    check sampled == @[2'u64, 3, 4, 5]
     check n.near.len == 0
-    check n.far.len == 1
-    check n.all == @[p]
+    check n.far.len == 4
+    check n.all.len == 4
+    check n.all.allIt(it in n.far)
 
   test "full retention keeps peers in their current set":
     var n = initNet(info(1), 17)

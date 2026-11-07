@@ -86,9 +86,8 @@ proc chance(n: var Net, c: float32): bool =
   c >= 1 or (c > 0 and n.rng.rand(1.0) < float64(c))
 
 template eachPct(n: var Net, xs, c, body: untyped) =
-  block: # each%; fraction c may use it; snapshot permits pruning
-    let chosen = toSeq(xs).filterIt(n.chance(c))
-    for it {.inject.} in chosen: body
+  # each%; fraction c may use it; snapshot permits pruning
+  for it {.inject.} in toSeq(xs).filterIt(n.chance(c)): body
 
 template pressure(n: Net): float32 =
   n.all.foldl(a + 4*b.up.load + b.down.load, 0'f32)
