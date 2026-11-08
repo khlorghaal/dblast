@@ -8,6 +8,3 @@ architecture and todo. Host provides transport, policy, authentication and
 identity. Preserve compact data-oriented Nim, aligned columns and visible
 ownership and mutation. Use shared visual annealing guidance for important
 code. Run `make test` after changes; keep generated output out of Git.
-
-Comment tags: `#!!` uncommitted hack; `#?`/`#????` confusion to explain;
-`#todo` unimplemented block; `#fixme` unintended or broken behavior.

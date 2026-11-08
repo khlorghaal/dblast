@@ -1,5 +1,5 @@
 version     = "0.1.0"
-author      = "OAI-GPT_GPT-6"
+author      = "OAI-GPT_Terra-6.1"
 description = "blastd — peer-to-peer data distribution"
 license     = "GPL-3.0"
 srcDir      = "src"
